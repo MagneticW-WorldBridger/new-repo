@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotFanatics — Service Features & System Ontology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --background: #0a0a0b;
+            --foreground: #fafafa;
+            --card: #131316;
+            --card-elevated: #1a1a1e;
+            --border: #26262b;
+            --muted: #71717a;
+            --primary: #fafafa;
+            --accent: #a855f7;
+            --radius: 0.75rem;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+
+        /* Tactile Minimalism: Depth through light simulation */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            /* Light from ceiling: highlight top, shadow bottom */
+            box-shadow: 
+                0 1px 0 0 rgba(255, 255, 255, 0.06) inset,  /* Top highlight */
+                0 -1px 0 0 rgba(0, 0, 0, 0.2) inset,         /* Subtle depth */
+                0 8px 16px -4px rgba(0, 0, 0, 0.5),          /* Drop shadow */
+                0 4px 8px -2px rgba(0, 0, 0, 0.3);           /* Secondary shadow for depth */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            /* Increase elevation on hover */
+            box-shadow: 
+                0 2px 0 0 rgba(255, 255, 255, 0.1) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.2) inset,
+                0 16px 32px -6px rgba(0, 0, 0, 0.6),
+                0 8px 16px -4px rgba(0, 0, 0, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .card:active {
+            /* Squish on click */
+            box-shadow: 
+                0 1px 2px 0 rgba(0, 0, 0, 0.4) inset,
+                0 -1px 0 0 rgba(255, 255, 255, 0.03) inset;
+            transform: translateY(0);
+        }
+
+        .card-elevated {
+            background: var(--card-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            /* Higher elevation = stronger shadows */
+            box-shadow: 
+                0 2px 1px 0 rgba(255, 255, 255, 0.08) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.25) inset,
+                0 20px 40px -12px rgba(0, 0, 0, 0.7),
+                0 10px 20px -6px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-elevated:hover {
+            box-shadow: 
+                0 3px 1px 0 rgba(255, 255, 255, 0.12) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.25) inset,
+                0 24px 48px -12px rgba(0, 0, 0, 0.75),
+                0 12px 24px -6px rgba(0, 0, 0, 0.55);
+            transform: translateY(-3px);
+        }
+
+        /* Sunken effect for data containers - pushed INTO the surface */
+        .sunken {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: calc(var(--radius) * 0.75);
+            /* Inverted lighting: dark top, light bottom (pushed in) */
+            box-shadow: 
+                0 2px 4px 0 rgba(0, 0, 0, 0.6) inset,       /* Dark top (recessed) */
+                0 -1px 0 0 rgba(255, 255, 255, 0.03) inset, /* Subtle light bottom edge */
+                0 1px 0 0 rgba(255, 255, 255, 0.02);        /* Rim light */
+            transition: all 0.3s ease;
+        }
+
+        /* Button with tactile physics */
+        .btn {
+            background: var(--card-elevated);
+            border: 1px solid var(--border);
+            padding: 0.625rem 1.25rem;
+            border-radius: calc(var(--radius) * 0.75);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Light catches top edge */
+            box-shadow: 
+                0 1px 0 0 rgba(255, 255, 255, 0.08) inset,  /* Top highlight */
+                0 -1px 0 0 rgba(0, 0, 0, 0.15) inset,        /* Bottom depth */
+                0 2px 4px rgba(0, 0, 0, 0.3),                /* Shadow */
+                0 1px 2px rgba(0, 0, 0, 0.2);                /* Depth shadow */
+        }
+
+        .btn:hover {
+            /* Button lifts on hover */
+            transform: translateY(-2px);
+            box-shadow: 
+                0 2px 0 0 rgba(255, 255, 255, 0.12) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.15) inset,
+                0 6px 12px rgba(0, 0, 0, 0.4),
+                0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            /* Button depresses into surface */
+            transform: translateY(0);
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.4) inset,
+                0 -1px 0 rgba(255, 255, 255, 0.04) inset;
+        }
+
+        /* Demo-specific button (amber accent) */
+        .btn-demo {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(234, 179, 8, 0.15));
+            border: 1px solid rgba(251, 146, 60, 0.4);
+            padding: 0.625rem 1.25rem;
+            border-radius: calc(var(--radius) * 0.75);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fb923c;
+            font-weight: 600;
+            box-shadow: 
+                0 1px 0 0 rgba(251, 146, 60, 0.3) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.2) inset,
+                0 4px 8px rgba(251, 146, 60, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 2px 0 0 rgba(251, 146, 60, 0.4) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.2) inset,
+                0 8px 16px rgba(251, 146, 60, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-demo:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.5) inset,
+                0 -1px 0 rgba(251, 146, 60, 0.2) inset;
+        }
+
+        /* Floating mobile demo button */
+        .btn-demo-floating {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.95), rgba(234, 179, 8, 0.95));
+            border: 2px solid rgba(251, 146, 60, 0.6);
+            backdrop-filter: blur(12px);
+            box-shadow: 
+                0 2px 0 0 rgba(251, 146, 60, 0.4) inset,
+                0 -2px 0 0 rgba(0, 0, 0, 0.3) inset,
+                0 8px 24px rgba(251, 146, 60, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .btn-demo-floating:active {
+            transform: scale(0.9);
+        }
+
+        .btn-demo-floating.show {
+            display: flex !important;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        /* Animated gradient border with depth */
+        @keyframes borderFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: var(--radius);
+            padding: 2px;
+            background: linear-gradient(
+                90deg, 
+                rgba(168, 85, 247, 0.5), 
+                rgba(59, 130, 246, 0.5), 
+                rgba(168, 85, 247, 0.5)
+            );
+            background-size: 200% 100%;
+            animation: borderFlow 4s ease infinite;
+            /* Outer glow for depth */
+            box-shadow: 
+                0 0 20px rgba(168, 85, 247, 0.2),
+                0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .gradient-border > div {
+            background: var(--card);
+            border-radius: calc(var(--radius) - 2px);
+            padding: 2rem;
+            /* Inner lighting */
+            box-shadow: 
+                0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.2) inset;
+        }
+
+        /* AI pulse effect */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .ai-indicator {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Feature grid with staggered animation */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card {
+            animation: slideInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Demo-specific styles */
+        .demo-container {
+            position: relative;
+            isolation: isolate;
+        }
+
+        .demo-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.3), rgba(234, 179, 8, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Demo cards have amber tint */
+        .demo-container .card {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.03), rgba(234, 179, 8, 0.02));
+            border-color: rgba(251, 146, 60, 0.2);
+        }
+
+        .demo-container .card-elevated {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.05), rgba(234, 179, 8, 0.03));
+            border-color: rgba(251, 146, 60, 0.25);
+        }
+
+        /* Conversation cards */
+        .conversation-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .conversation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+                0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .conversation-card:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.4) inset;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            .card, .card-elevated {
+                padding: 1rem;
+            }
+
+            .demo-container {
+                padding: 1.5rem 1rem !important;
+            }
+
+            /* Hide navigation on mobile, show hamburger would be better but keeping simple */
+            nav .flex.gap-2 {
+                display: none;
+            }
+
+            /* Stack bento grid on mobile */
+            .grid.md\\:grid-cols-6 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .grid.md\\:grid-cols-6 > * {
+                grid-column: span 1 !important;
+                grid-row: span 1 !important;
+            }
+
+            /* Better spacing on mobile */
+            section {
+                scroll-margin-top: 6rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.125rem;
+            }
+        }
+
+        /* Navigation pills with tactile feedback */
+        .nav-pill {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-pill:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-pill.active {
+            background: var(--card-elevated);
+            /* Raised pill appearance */
+            box-shadow: 
+                0 1px 0 0 rgba(255, 255, 255, 0.1) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.15) inset,
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-pill:active {
+            /* Pressed state */
+            box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.4) inset,
+                0 -1px 0 rgba(255, 255, 255, 0.05) inset;
+            transform: translateY(1px);
+        }
+
+        /* Status badge with tactile depth */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            /* Subtle raised appearance */
+            box-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.1) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.15) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+
+        .badge-primary {
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+        }
+
+        /* Interactive highlight - raised surface */
+        .highlight {
+            background: linear-gradient(90deg, rgba(168, 85, 247, 0.15), transparent);
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+            margin-left: -1rem;
+            /* Slight elevation */
+            box-shadow: 
+                0 0 0 1px rgba(168, 85, 247, 0.1),
+                0 2px 8px rgba(168, 85, 247, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .highlight:hover {
+            background: linear-gradient(90deg, rgba(168, 85, 247, 0.2), transparent);
+            box-shadow: 
+                0 0 0 1px rgba(168, 85, 247, 0.15),
+                0 4px 12px rgba(168, 85, 247, 0.2),
+                0 1px 0 rgba(255, 255, 255, 0.08) inset;
+        }
+
+        /* Prose styles */
+        .prose ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .prose ul li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prose ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--muted);
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 0.75rem;
+            background: var(--card-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b" style="background: rgba(10, 10, 11, 0.8); backdrop-filter: blur(12px); border-color: var(--border);">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #a855f7, #3b82f6); box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);">
+                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold">BotFanatics</h1>
+                        <p class="text-xs" style="color: var(--muted);">Service Features & System Ontology</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="#ontology" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Ontology</a>
+                    <a href="#features" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Features</a>
+                    <a href="#implementation" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Implementation</a>
+                    <a href="#pricing" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Pricing</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-16 px-6">
+        <div class="max-w-5xl mx-auto space-y-16">
+
+            <!-- SYSTEM ONTOLOGY (The Simplest Possible Summary) -->
+            <section id="ontology" class="scroll-mt-24">
+                <div class="gradient-border">
+                    <div>
+                        <div class="flex items-start justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold mb-2">System Ontology</h2>
+                                <p class="text-base" style="color: var(--muted);">What we are. What we do. What you get.</p>
+                            </div>
+                            <div class="flex items-center gap-2 badge badge-success">
+                                <div class="w-2 h-2 rounded-full bg-green-500 ai-indicator"></div>
+                                <span>Production Ready</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento Grid Layout -->
+                        <div class="grid md:grid-cols-6 gap-4">
+                            <!-- Main Statement (spans 2 rows, 4 cols) -->
+                            <div class="card md:col-span-4 md:row-span-2 p-8 flex flex-col justify-center">
+                                <p class="text-2xl font-semibold leading-relaxed mb-6">
+                                    We build <span class="text-purple-400">AI-powered customer interaction infrastructure</span> 
+                                    that handles <span class="text-blue-400">conversations</span>, 
+                                    connects to <span class="text-green-400">your systems</span>, 
+                                    and learns from <span class="text-orange-400">every interaction</span>.
+                                </p>
+                                <div class="space-y-3 text-sm" style="color: var(--muted);">
+                                    <div class="flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Multi-channel AI (chat, voice, social) aligned with your brand</span>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Real-time integration with your CRM, inventory, support systems</span>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Contextual intelligence that improves itself over time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversational Layer -->
+                            <div class="card md:col-span-2 p-6">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style="background: rgba(168,85,247,0.15);">
+                                    <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold mb-2">Conversational Layer</h3>
+                                <p class="text-sm" style="color: var(--muted);">AI handles chat & voice across all channels</p>
+                            </div>
+
+                            <!-- Integration Layer -->
+                            <div class="card md:col-span-2 p-6">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style="background: rgba(59,130,246,0.15);">
+                                    <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold mb-2">Integration Layer</h3>
+                                <p class="text-sm" style="color: var(--muted);">Connects to your CRM, inventory, support systems</p>
+                            </div>
+
+                            <!-- Intelligence Layer (spans 2 cols) -->
+                            <div class="highlight md:col-span-6 p-6">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.2);">
+                                        <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold mb-2 flex items-center gap-2">
+                                            <span>Intelligence Layer</span>
+                                            <span class="text-xs font-normal px-2 py-1 rounded" style="background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3);">
+                                                Our Differentiator
+                                            </span>
+                                        </h3>
+                                        <p class="text-sm mb-2" style="color: var(--muted);">
+                                            Other AI companies give you chatbots. We give you <strong>operational intelligence</strong>.
+                                        </p>
+                                        <p class="text-sm">
+                                            Our system reads <em>every conversation across every channel</em>, extracts <strong>why</strong> customers contact you (not just <em>what</em> they say), 
+                                            identifies patterns, surfaces missed opportunities, and continuously improves its own workflows. 
+                                            This is <span class="tooltip" data-tooltip="Closed-loop: Analytics → Insights → Model Improvement → Better Results">closed-loop AI</span> — 
+                                            not a static chatbot.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FEATURES BREAKDOWN -->
+            <section id="features" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-8">Service Features</h2>
+                
+                <div class="space-y-6">
+
+                    <!-- Feature 1: Conversational Experience -->
+                    <div class="card-elevated p-8 feature-card">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.15);">
+                                <svg class="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">1. Conversational Experience Layer</h3>
+                                        <p class="text-sm" style="color: var(--muted);">Multi-channel AI chat and voice infrastructure</p>
+                                    </div>
+                                    <span class="badge badge-primary">Core Service</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Channels</strong>
+                                <ul class="space-y-1.5">
+                                    <li>WebChat (embedded)</li>
+                                    <li>Facebook Messenger</li>
+                                    <li>Instagram DM</li>
+                                    <li>Voice/Phone (SIP/VoIP)</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Core Functions</strong>
+                                <ul class="space-y-1.5">
+                                    <li>Support & sales automation</li>
+                                    <li>Order lookups & scheduling</li>
+                                    <li>Real-time system integration</li>
+                                    <li>Human handoff & escalation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="sunken p-3 text-xs">
+                            Voice: +2 weeks implementation. Phone provisioning & carrier fees separate.
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: Contacts & Actions -->
+                    <div class="card-elevated p-8 feature-card">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(59,130,246,0.15);">
+                                <svg class="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">2. Contact Management & Customer Actions</h3>
+                                        <p class="text-sm" style="color: var(--muted);">CRM-integrated command center for human operators</p>
+                                    </div>
+                                    <span class="badge badge-primary">Core Service</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Direct Actions</strong>
+                                <ul class="space-y-1.5">
+                                    <li>Call / Message / Email</li>
+                                    <li>Create Support Ticket</li>
+                                    <li>Tag, Segment, Assign</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Intelligence</strong>
+                                <ul class="space-y-1.5">
+                                    <li>Customer journey view</li>
+                                    <li>Transaction timeline</li>
+                                    <li>Trigger DFY workflows</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="sunken p-3 text-xs">
+                            Campaigns & workflows: <strong>Done-For-You</strong> only. Self-service builder = roadmap.
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Analytics (Split into A and B) -->
+                    <div class="card-elevated p-8 feature-card">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(34,197,94,0.15);">
+                                <svg class="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">3. Analytics & Intelligence</h3>
+                                        <p class="text-sm" style="color: var(--muted);">Two-layer analytics: operational metrics + contextual intelligence</p>
+                                    </div>
+                                    <span class="badge badge-success">Differentiator</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- A: Deterministic -->
+                            <div class="sunken p-4">
+                                <h4 class="font-semibold mb-2 text-sm flex items-center gap-2">
+                                    <span>A. Standard Metrics</span>
+                                    <span class="text-xs font-normal px-2 py-1 rounded" style="background: rgba(255,255,255,0.05); color: var(--muted);">Operational</span>
+                                </h4>
+                                <div class="grid md:grid-cols-3 gap-2 text-xs" style="color: var(--muted);">
+                                    <div>Volume, channels, response times</div>
+                                    <div>Order lookups, conversions, escalations</div>
+                                    <div>Geography, traffic, customer segments</div>
+                                </div>
+                            </div>
+
+                            <!-- B: Contextual Intelligence -->
+                            <div class="highlight p-6">
+                                <h4 class="font-semibold mb-2 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    <span>B. Context Intelligence</span>
+                                    <span class="text-xs font-normal px-2 py-1 rounded" style="background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3);">
+                                        Proprietary
+                                    </span>
+                                </h4>
+                                <p class="text-sm mb-3">
+                                    <strong>What nobody else has:</strong> Semantic analysis revealing <em>why</em> customers contact you, not just <em>what</em> they say.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-3 text-sm mb-4">
+                                    <ul class="space-y-1.5">
+                                        <li>Sentiment, objection, motivation mapping</li>
+                                        <li>Root cause identification (not symptoms)</li>
+                                        <li>Intent clusters & persona patterns</li>
+                                    </ul>
+                                    <ul class="space-y-1.5">
+                                        <li>Missed opportunity detection</li>
+                                        <li>Funnel failure points</li>
+                                        <li>Behavioral trigger discovery</li>
+                                    </ul>
+                                </div>
+
+                                <div class="p-4 rounded" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(168,85,247,0.2);">
+                                    <div class="flex items-start gap-3">
+                                        <svg class="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-xs font-semibold uppercase tracking-wide mb-1" style="color: var(--accent);">Self-Training Loop</p>
+                                            <p class="text-xs" style="color: var(--muted);">
+                                                System analyzes conversations → identifies gaps → improves workflows → suggests optimizations → retrains (human-approved) → becomes smarter.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: Behavioral Engine -->
+                    <div class="card-elevated p-8 feature-card">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(251,146,60,0.15);">
+                                <svg class="w-7 h-7 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">4. AI-Driven Website Behavioral Engine</h3>
+                                        <p class="text-sm" style="color: var(--muted);">Visitor tracking, intent scoring, adaptive chat behavior</p>
+                                    </div>
+                                    <span class="badge badge-success">Differentiator</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Tracks</strong>
+                                <ul class="space-y-1.5">
+                                    <li>Site visits, pages, time on page</li>
+                                    <li>UTM params, traffic source, campaigns</li>
+                                    <li>Repeat visits, cross-device ID</li>
+                                    <li>Purchase intent signals</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <strong class="block mb-2 text-xs uppercase tracking-wide" style="color: var(--muted);">Adapts</strong>
+                                <ul class="space-y-1.5">
+                                    <li>AI "Visitor Score" generation</li>
+                                    <li>Dynamic chat timing & tone</li>
+                                    <li>Personalized CTAs & offers</li>
+                                    <li>Marketing strategy data</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="sunken p-3 text-xs">
+                            Requires JS snippet on client site. Most platforms supported.
+                        </div>
+                    </div>
+
+                    <!-- Feature 5: Custom Integrations -->
+                    <div class="card-elevated p-8 feature-card">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.15);">
+                                <svg class="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">5. Custom System Integrations</h3>
+                                        <p class="text-sm" style="color: var(--muted);">Connect AI to your CRM, inventory, ERP, support systems, etc.</p>
+                                    </div>
+                                    <span class="badge badge-primary">Variable Scope</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="prose text-sm space-y-4">
+                            <p>We connect the AI to your existing business systems for real-time data access and updates.</p>
+                            
+                            <div>
+                                <strong class="text-base">Integration Tiers (Pricing Structure):</strong>
+                                <div class="space-y-3 mt-3">
+                                    <div class="sunken p-4">
+                                        <div class="font-semibold mb-1">Tier 1: Standard API + Documentation Exists</div>
+                                        <p class="text-xs" style="color: var(--muted);">Normal integration pricing. Straightforward connection with documented endpoints.</p>
+                                    </div>
+                                    <div class="sunken p-4">
+                                        <div class="font-semibold mb-1">Tier 2: API Exists, No/Poor Documentation</div>
+                                        <p class="text-xs" style="color: var(--muted);">Reverse engineering fee applies. Requires endpoint discovery and testing.</p>
+                                    </div>
+                                    <div class="sunken p-4">
+                                        <div class="font-semibold mb-1">Tier 3: No API, Manual Workflow Required</div>
+                                        <p class="text-xs" style="color: var(--muted);">Advanced workflow engineering fee. May require scraping, email parsing, or custom bridge solutions.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sunken p-4 text-xs">
+                                <strong>Contractual Note:</strong> Integration complexity is assessed during onboarding. 
+                                Pricing adjustments communicated before work begins. Ongoing maintenance of third-party APIs not included; 
+                                we will notify client if external API changes break integration.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- IMPLEMENTATION TIMELINE -->
+            <section id="implementation" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-8">Implementation Pipeline</h2>
+                
+                <div class="space-y-4">
+                    <!-- Chat Implementation -->
+                    <div class="card p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3);">
+                                <span class="text-xl font-bold text-purple-400">1</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold mb-1">Chat Implementation</h3>
+                                <p class="text-sm mb-3" style="color: var(--muted);">Timeline: <strong>2 Weeks</strong></p>
+                                <ul class="prose text-sm">
+                                    <li>Audit of CRM, workflows, scripts, SOPs, brand voice</li>
+                                    <li>Data ingestion (docs, FAQs, PDFs, product lists, policies)</li>
+                                    <li>Alignment with brand tone, terminology, and guidelines</li>
+                                    <li>Custom flow creation + function development</li>
+                                    <li>QA + test scenarios + stakeholder review</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Implementation -->
+                    <div class="card p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3);">
+                                <span class="text-xl font-bold text-blue-400">2</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold mb-1">Voice Implementation (Optional)</h3>
+                                <p class="text-sm mb-3" style="color: var(--muted);">Timeline: <strong>2 Additional Weeks</strong> (post-chat)</p>
+                                <ul class="prose text-sm">
+                                    <li>Separate flows adapted for telephony context</li>
+                                    <li>Optimization of tone, cadence, escalation triggers</li>
+                                    <li>Real-time API lookups optimized for voice speed</li>
+                                    <li>Phone number provisioning coordination</li>
+                                    <li>Call quality testing across carriers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ongoing Support -->
+                    <div class="card p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);">
+                                <span class="text-xl font-bold text-green-400">∞</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold mb-1">Ongoing Support & Optimization</h3>
+                                <p class="text-sm mb-3" style="color: var(--muted);">Continuous (part of monthly service)</p>
+                                <ul class="prose text-sm">
+                                    <li>Monthly performance review + analytics walkthrough</li>
+                                    <li>Flow updates based on conversation insights</li>
+                                    <li>DFY workflow/campaign creation as requested</li>
+                                    <li>Integration maintenance (when issues arise from our side)</li>
+                                    <li>Model retraining and improvement suggestions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRICING -->
+            <section id="pricing" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-8">Service Pricing</h2>
+                
+                <div class="card-elevated p-8">
+                    <div class="mb-8">
+                        <div class="flex items-baseline gap-3 mb-2">
+                            <div class="text-4xl font-bold">$600 – $2,500</div>
+                            <div class="text-lg" style="color: var(--muted);">per month</div>
+                        </div>
+                        <p class="text-sm" style="color: var(--muted);">Pricing based on channels, integrations, volume, and scope. Billed monthly or annually.</p>
+                    </div>
+
+                    <!-- Pricing Table -->
+                    <div class="space-y-4 mb-8">
+                        <h3 class="font-semibold text-lg mb-4">Pricing Components</h3>
+                        
+                        <!-- Table -->
+                        <div class="sunken rounded-lg overflow-hidden overflow-x-auto">
+                            <table class="w-full text-sm min-w-[600px]">
+                                <thead>
+                                    <tr style="background: rgba(255,255,255,0.03);">
+                                        <th class="text-left p-3 md:p-4 font-semibold">Component</th>
+                                        <th class="text-left p-3 md:p-4 font-semibold">Impact</th>
+                                        <th class="text-left p-3 md:p-4 font-semibold">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">Channels</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">Base → +$200/ch</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">WebChat included. FB/IG/Voice add complexity</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">Voice/Phone</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">+$400–$800</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">Separate implementation (2wk post-chat)</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">Integrations</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">Tier-based</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">T1: std API. T2: no docs. T3: no API</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">Analytics</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">Incl / Premium</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">Deterministic incl. Context Intel = premium</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">Volume</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">Scales</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">>10K/mo may need infra adjust</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid var(--border);">
+                                        <td class="p-3 md:p-4 font-medium">DFY Campaigns</td>
+                                        <td class="p-3 md:p-4" style="color: var(--muted);">Included</td>
+                                        <td class="p-3 md:p-4 text-xs" style="color: var(--muted);">We build. Unlimited = enterprise</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- What's Included / Not Included -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-semibold mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Included in Monthly Fee</span>
+                            </h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>AI infrastructure & model usage</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>System hosting & uptime monitoring</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>Ongoing flow optimization & updates</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>Monthly analytics review sessions</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>DFY campaign/workflow creation</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>Support & technical maintenance</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 mt-1">•</span>
+                                    <span>Model retraining & improvement</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>Separate / Client Responsibility</span>
+                            </h3>
+                            <ul class="space-y-2 text-sm" style="color: var(--muted);">
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Phone number provisioning & carrier fees</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Third-party API usage costs (if billed by vendor)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Major feature additions outside original scope</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Full white-label rebrand (custom work)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Third-party platform maintenance (e.g., Shopify updates)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1">•</span>
+                                    <span>Self-service campaign builder (roadmap item)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Additional Note -->
+                    <div class="mt-8 p-4 rounded" style="background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2);">
+                        <p class="text-sm">
+                            <strong>Note:</strong> Final pricing determined during onboarding based on channel count, integration complexity, and expected volume. 
+                            Tier adjustments communicated transparently before implementation begins.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI-POWERED VISUALIZATION (Creative Showcase) -->
+            <section id="visualization" class="scroll-mt-24">
+                <!-- Demo Container with Distinct Visual Treatment -->
+                <div class="demo-container p-8 rounded-xl" style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.05), rgba(234, 179, 8, 0.05)); border: 2px solid rgba(251, 146, 60, 0.3); position: relative;">
+                    
+                    <!-- DEMO Badge -->
+                    <div class="absolute top-4 right-4">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: rgba(251, 146, 60, 0.2); border: 1px solid rgba(251, 146, 60, 0.4);">
+                            <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-sm font-semibold text-orange-400">INTERACTIVE DEMO</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-bold mb-2">Live System Intelligence</h2>
+                                <p class="text-sm" style="color: var(--muted);">Real-time demonstration of our context intelligence engine</p>
+                            </div>
+                            <button id="toggleSimulation" class="btn-demo flex items-center justify-center gap-2 md:flex-shrink-0">
+                                <svg id="playIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <svg id="pauseIcon" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span id="simBtnText">Start Demo</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Floating control for mobile (sticky after scroll) -->
+                        <button id="toggleSimulationMobile" class="btn-demo-floating hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full items-center justify-center shadow-xl md:hidden">
+                            <svg id="playIconMobile" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <svg id="pauseIconMobile" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                
+                <!-- Main Dashboard Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    
+                    <!-- Real-Time Metrics -->
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-sm">System Metrics</h3>
+                            <div class="w-2 h-2 rounded-full bg-green-500 ai-indicator"></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-baseline gap-2 mb-1">
+                                    <div id="convCount" class="text-2xl font-bold">1,247</div>
+                                    <div class="text-xs" style="color: var(--muted);">conversations</div>
+                                </div>
+                                <div class="text-xs text-green-400">+23% this week</div>
+                            </div>
+                            <div>
+                                <div class="flex items-baseline gap-2 mb-1">
+                                    <div id="intentAccuracy" class="text-2xl font-bold">94.3%</div>
+                                    <div class="text-xs" style="color: var(--muted);">intent accuracy</div>
+                                </div>
+                                <div class="text-xs text-green-400">+2.1% improvement</div>
+                            </div>
+                            <div>
+                                <div class="flex items-baseline gap-2 mb-1">
+                                    <div id="avgResponse" class="text-2xl font-bold">1.2s</div>
+                                    <div class="text-xs" style="color: var(--muted);">avg response</div>
+                                </div>
+                                <div class="text-xs text-blue-400">-0.3s faster</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Analysis -->
+                    <div class="card p-6">
+                        <h3 class="font-semibold text-sm mb-4">Sentiment Distribution</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex items-center justify-between text-xs mb-1">
+                                    <span style="color: var(--muted);">Positive</span>
+                                    <span id="sentPos" class="font-medium">68%</span>
+                                </div>
+                                <div class="w-full h-2 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.05);">
+                                    <div id="sentPosBar" class="h-full bg-green-500 transition-all duration-500" style="width: 68%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between text-xs mb-1">
+                                    <span style="color: var(--muted);">Neutral</span>
+                                    <span id="sentNeut" class="font-medium">24%</span>
+                                </div>
+                                <div class="w-full h-2 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.05);">
+                                    <div id="sentNeutBar" class="h-full bg-blue-500 transition-all duration-500" style="width: 24%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between text-xs mb-1">
+                                    <span style="color: var(--muted);">Negative</span>
+                                    <span id="sentNeg" class="font-medium">8%</span>
+                                </div>
+                                <div class="w-full h-2 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.05);">
+                                    <div id="sentNegBar" class="h-full bg-red-500 transition-all duration-500" style="width: 8%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 rounded text-xs" style="background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); color: #4ade80;">
+                            Sentiment trending positive
+                        </div>
+                    </div>
+
+                    <!-- Active Learning Status -->
+                    <div class="card p-6">
+                        <h3 class="font-semibold text-sm mb-4">Active Learning</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.15);">
+                                    <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium mb-1">Pattern Recognition</div>
+                                    <div class="text-xs" style="color: var(--muted);">5 new clusters identified</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(59,130,246,0.15);">
+                                    <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium mb-1">Model Retraining</div>
+                                    <div class="text-xs" style="color: var(--muted);">Next cycle in 2h 14m</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(251,146,60,0.15);">
+                                    <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium mb-1">Workflow Optimization</div>
+                                    <div class="text-xs" style="color: var(--muted);">3 suggestions pending</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Conversation Analysis Stream -->
+                <div class="card-elevated p-8 mb-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="font-semibold mb-1">Live Conversation Stream</h3>
+                            <p class="text-xs" style="color: var(--muted);">Real-time analysis as conversations flow through the system</p>
+                        </div>
+                        <div class="badge badge-primary">
+                            <div class="w-2 h-2 rounded-full bg-purple-500 ai-indicator"></div>
+                            <span>Processing</span>
+                        </div>
+                    </div>
+
+                    <div id="conversationStream" class="space-y-3 h-80 overflow-hidden relative">
+                        <!-- Conversations will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Intent Clustering Visualization -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="card-elevated p-8">
+                        <h3 class="font-semibold mb-4">Intent Clusters Detected</h3>
+                        <div id="intentClusters" class="space-y-3">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="card-elevated p-8">
+                        <h3 class="font-semibold mb-4">AI Insights Generated</h3>
+                        <div id="aiInsights" class="space-y-3">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                </div><!-- End demo-container -->
+            </section>
+
+            <!-- ROADMAP TEASER -->
+            <section id="roadmap" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-8">Roadmap</h2>
+                
+                <div class="card p-8">
+                    <p class="text-sm mb-6" style="color: var(--muted);">
+                        We're building for the future. Here's what's coming next.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(168,85,247,0.2);">
+                                <span class="text-sm">Q2</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">AI-Assisted Campaign Builder</h3>
+                                <p class="text-sm" style="color: var(--muted);">
+                                    Conversational interface for creating campaigns: "Call all hot leads from Armando and Jorge, warm transfer interested parties to me."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(59,130,246,0.2);">
+                                <span class="text-sm">Q3</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">Voice-Controlled Contact Management</h3>
+                                <p class="text-sm" style="color: var(--muted);">
+                                    Verbally identify contact groups and trigger bulk actions via voice commands to the AI.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(34,197,94,0.2);">
+                                <span class="text-sm">Q4</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">Self-Service Campaign Studio (Enterprise Tier)</h3>
+                                <p class="text-sm" style="color: var(--muted);">
+                                    Drag-and-drop workflow builder with AI suggestions for enterprise clients who want more control.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCOPE BOUNDARIES (Legal Protection - placed at end) -->
+            <section id="scope" class="scroll-mt-24">
+                <details class="card p-8">
+                    <summary class="cursor-pointer font-semibold text-lg mb-2">Service Scope & Limitations</summary>
+                    <div class="mt-4 space-y-4 text-sm" style="color: var(--muted);">
+                        <p class="text-base font-medium" style="color: var(--foreground);">
+                            To ensure clarity and manage expectations, the following are outside our service scope:
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-3">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span><strong>Self-service campaign builders:</strong> We build campaigns and workflows FOR you (Done-For-You model). Self-service tools are on the roadmap for enterprise tier.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span><strong>Infrastructure management:</strong> We provide hosted AI infrastructure. Your internal systems, servers, and databases remain your responsibility.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span><strong>Third-party API maintenance:</strong> If external vendor APIs change or break, we will notify you but cannot control or fix issues originating from third-party services.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span><strong>System redesigns:</strong> We integrate with your existing systems. Redesigning databases, CRM structures, or core business systems is not included.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: var(--muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span><strong>Unlimited custom requests:</strong> DFY workflows are included within reasonable scope. Enterprise-scale or continuous custom development requires separate scoping.</span>
+                            </li>
+                        </ul>
+                        <p class="mt-4 text-xs italic">
+                            These boundaries ensure we deliver exceptional work within our expertise while maintaining sustainable, high-quality service for all clients.
+                        </p>
+                    </div>
+                </details>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="pt-12 pb-8 border-t" style="border-color: var(--border);">
+                <div class="text-center">
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
+                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <span class="font-bold text-lg">BotFanatics</span>
+                    </div>
+                    <p class="text-sm" style="color: var(--muted);">Operational AI Infrastructure for Growing Businesses</p>
+                    <p class="text-xs mt-4" style="color: var(--muted);">© 2025 BotFanatics.com — All rights reserved</p>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <script>
+        // Navigation active state
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-pill');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll for navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // AI indicators pulse
+        setInterval(() => {
+            document.querySelectorAll('.ai-indicator').forEach(el => {
+                el.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    el.style.transform = 'scale(1)';
+                }, 200);
+            });
+        }, 2000);
+
+        // ========================================
+        // LIVE SYSTEM INTELLIGENCE DEMO
+        // ========================================
+
+        let isSimulating = false;
+        let demoIntervals = [];
+
+        const conversations = [
+            { user: "Where's my order #4521?", intent: "Order Status", sentiment: "neutral", analysis: "Customer seeking order info → Triggering automated lookup" },
+            { user: "I need to return this, it doesn't fit", intent: "Return Request", sentiment: "neutral", analysis: "Return intent detected → Presenting return policy + label generation" },
+            { user: "This is taking forever! I've been waiting 3 weeks", intent: "Complaint", sentiment: "negative", analysis: "High frustration + delay mention → Escalating to human agent" },
+            { user: "Do you have this in blue?", intent: "Product Inquiry", sentiment: "positive", analysis: "Product variant question → Checking inventory across channels" },
+            { user: "What's your return policy?", intent: "Policy Question", sentiment: "neutral", analysis: "FAQ intent → Serving policy doc + related products with good return rates" },
+            { user: "I love this! Ordering 3 more", intent: "Purchase", sentiment: "positive", analysis: "High satisfaction + repeat purchase → Flagging for loyalty program" },
+            { user: "Can I get a discount on bulk orders?", intent: "Pricing Negotiation", sentiment: "neutral", analysis: "B2B signal detected → Routing to sales team for bulk pricing" },
+            { user: "The checkout page keeps crashing", intent: "Technical Issue", sentiment: "negative", analysis: "Critical: checkout bug reported → Alerting tech team + offering assistance" },
+            { user: "When will the red variant be back in stock?", intent: "Inventory Question", sentiment: "neutral", analysis: "Out-of-stock inquiry → Setting up restock notification + suggesting alternatives" },
+            { user: "Thank you so much, this was helpful!", intent: "Gratitude", sentiment: "positive", analysis: "Resolution confirmed → Recording successful interaction for training" }
+        ];
+
+        const intentClustersData = [
+            { name: "Shipping Delays", count: 342, trend: "+18%", color: "rgba(239, 68, 68, 0.2)", textColor: "#ef4444" },
+            { name: "Product Sizing", count: 289, trend: "+12%", color: "rgba(251, 146, 60, 0.2)", textColor: "#fb923c" },
+            { name: "Return Process", count: 156, trend: "-5%", color: "rgba(59, 130, 246, 0.2)", textColor: "#3b82f6" },
+            { name: "Payment Issues", count: 94, trend: "+23%", color: "rgba(168, 85, 247, 0.2)", textColor: "#a855f7" },
+            { name: "Stock Availability", count: 187, trend: "+8%", color: "rgba(34, 197, 94, 0.2)", textColor: "#22c55e" }
+        ];
+
+        const aiInsightsData = [
+            { title: "Shipping Communication Gap", description: "60% of 'where is my order' questions occur within 48hrs of purchase. Recommend automated shipping updates.", impact: "High" },
+            { title: "Size Guide Inadequacy", description: "Product sizing questions cluster around 3 specific categories. Size guide needs visual reference.", impact: "Medium" },
+            { title: "Checkout Friction Point", description: "8 reports of checkout crashes on mobile Safari. Payment processor integration issue detected.", impact: "Critical" },
+            { title: "Cross-Sell Opportunity", description: "Customers asking about belts also inquire about shoes 78% of the time. Bundle suggestion workflow created.", impact: "Medium" },
+            { title: "Language Preference Pattern", description: "15% of evening traffic prefers Spanish. Consider bilingual support during peak hours.", impact: "Low" }
+        ];
+
+        function createConversationCard(conv, index) {
+            const sentimentColors = {
+                positive: 'rgba(34, 197, 94, 0.15)',
+                neutral: 'rgba(59, 130, 246, 0.15)',
+                negative: 'rgba(239, 68, 68, 0.15)'
+            };
+
+            const sentimentBorder = {
+                positive: 'rgba(34, 197, 94, 0.3)',
+                neutral: 'rgba(59, 130, 246, 0.3)',
+                negative: 'rgba(239, 68, 68, 0.3)'
+            };
+
+            return `
+                <div class="conversation-card p-4 rounded" style="background: ${sentimentColors[conv.sentiment]}; border: 1px solid ${sentimentBorder[conv.sentiment]}; opacity: 0; transform: translateY(20px); animation: slideInUp 0.5s forwards ${index * 0.1}s;">
+                    <div class="flex items-start gap-3 mb-2">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(255,255,255,0.1);">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium mb-1">"${conv.user}"</p>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="px-2 py-1 rounded" style="background: rgba(168,85,247,0.15); color: #c084fc;">${conv.intent}</span>
+                                <span style="color: var(--muted);">•</span>
+                                <span style="color: var(--muted);">${conv.sentiment}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-11 text-xs" style="color: var(--muted);">
+                        <svg class="w-3 h-3 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        ${conv.analysis}
+                    </div>
+                </div>
+            `;
+        }
+
+        function populateIntentClusters() {
+            const container = document.getElementById('intentClusters');
+            container.innerHTML = intentClustersData.map((cluster, i) => `
+                <div class="p-4 rounded" style="background: ${cluster.color}; border: 1px solid ${cluster.color}; opacity: 0; animation: slideInUp 0.4s forwards ${i * 0.1}s;">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-sm">${cluster.name}</span>
+                        <span class="text-xs px-2 py-1 rounded" style="background: rgba(0,0,0,0.2); color: ${cluster.textColor};">${cluster.trend}</span>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: ${cluster.textColor};">${cluster.count}</div>
+                    <div class="text-xs mt-1" style="color: var(--muted);">conversations this week</div>
+                </div>
+            `).join('');
+        }
+
+        function populateAIInsights() {
+            const container = document.getElementById('aiInsights');
+            const impactColors = {
+                Critical: 'rgba(239, 68, 68, 0.2)',
+                High: 'rgba(251, 146, 60, 0.2)',
+                Medium: 'rgba(59, 130, 246, 0.2)',
+                Low: 'rgba(113, 113, 122, 0.2)'
+            };
+            
+            // Clear container first
+            container.innerHTML = '';
+            
+            // Add insights one by one with delays
+            aiInsightsData.forEach((insight, i) => {
+                setTimeout(() => {
+                    if (!isSimulating) return;
+                    
+                    const insightDiv = document.createElement('div');
+                    insightDiv.className = 'p-4 rounded';
+                    insightDiv.style.cssText = `background: ${impactColors[insight.impact]}; border: 1px solid ${impactColors[insight.impact]}; opacity: 0; animation: slideInUp 0.4s forwards;`;
+                    insightDiv.innerHTML = `
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-sm">${insight.title}</span>
+                            <span class="text-xs px-2 py-1 rounded" style="background: rgba(0,0,0,0.3);">${insight.impact}</span>
+                        </div>
+                        <p class="text-xs" style="color: var(--muted);">${insight.description}</p>
+                    `;
+                    container.appendChild(insightDiv);
+                }, i * 1200); // Stagger by 1.2 seconds
+            });
+        }
+
+        function updateMetrics() {
+            // Animate metrics with random fluctuations
+            const convCount = document.getElementById('convCount');
+            const intentAccuracy = document.getElementById('intentAccuracy');
+            const avgResponse = document.getElementById('avgResponse');
+
+            let baseConv = 1247;
+            let baseAccuracy = 94.3;
+            let baseResponse = 1.2;
+
+            setInterval(() => {
+                if (!isSimulating) return;
+                
+                baseConv += Math.floor(Math.random() * 3);
+                convCount.textContent = baseConv.toLocaleString();
+
+                baseAccuracy += (Math.random() - 0.5) * 0.2;
+                baseAccuracy = Math.max(93, Math.min(95, baseAccuracy));
+                intentAccuracy.textContent = baseAccuracy.toFixed(1) + '%';
+
+                baseResponse += (Math.random() - 0.5) * 0.1;
+                baseResponse = Math.max(1.0, Math.min(1.4, baseResponse));
+                avgResponse.textContent = baseResponse.toFixed(1) + 's';
+            }, 2000);
+        }
+
+        function updateSentiment() {
+            setInterval(() => {
+                if (!isSimulating) return;
+
+                const pos = Math.floor(65 + Math.random() * 6);
+                const neg = Math.floor(6 + Math.random() * 4);
+                const neut = 100 - pos - neg;
+
+                document.getElementById('sentPos').textContent = pos + '%';
+                document.getElementById('sentPosBar').style.width = pos + '%';
+                
+                document.getElementById('sentNeut').textContent = neut + '%';
+                document.getElementById('sentNeutBar').style.width = neut + '%';
+                
+                document.getElementById('sentNeg').textContent = neg + '%';
+                document.getElementById('sentNegBar').style.width = neg + '%';
+            }, 3000);
+        }
+
+        function streamConversations() {
+            const container = document.getElementById('conversationStream');
+            let currentIndex = 0;
+
+            const intervalId = setInterval(() => {
+                if (!isSimulating) return;
+
+                const conv = conversations[currentIndex % conversations.length];
+                
+                // Create new card
+                const cardDiv = document.createElement('div');
+                cardDiv.innerHTML = createConversationCard(conv, 0);
+                container.insertBefore(cardDiv.firstElementChild, container.firstChild);
+
+                // Remove old cards if more than 6
+                while (container.children.length > 6) {
+                    container.removeChild(container.lastChild);
+                }
+
+                currentIndex++;
+            }, 2500);
+
+            demoIntervals.push(intervalId);
+        }
+
+        // Floating mobile button visibility
+        const floatingBtn = document.getElementById('toggleSimulationMobile');
+        const demoSection = document.getElementById('visualization');
+        
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            if (!demoSection) return;
+            
+            const demoRect = demoSection.getBoundingClientRect();
+            const isInView = demoRect.top < window.innerHeight && demoRect.bottom > 0;
+            
+            // Show floating button when demo section is in view on mobile
+            if (window.innerWidth < 768 && isInView) {
+                floatingBtn.classList.add('show');
+            } else {
+                floatingBtn.classList.remove('show');
+            }
+        });
+
+        // Toggle function
+        function toggleDemo() {
+            isSimulating = !isSimulating;
+            const btn = document.getElementById('simBtnText');
+            const playIcon = document.getElementById('playIcon');
+            const pauseIcon = document.getElementById('pauseIcon');
+            const playIconMobile = document.getElementById('playIconMobile');
+            const pauseIconMobile = document.getElementById('pauseIconMobile');
+
+            if (isSimulating) {
+                btn.textContent = 'Pause Demo';
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                playIconMobile.classList.add('hidden');
+                pauseIconMobile.classList.remove('hidden');
+                
+                // Scroll to show the action on mobile
+                if (window.innerWidth < 768) {
+                    const metricsSection = document.querySelector('.demo-container .grid');
+                    if (metricsSection) {
+                        metricsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+                
+                // Start all simulations
+                populateIntentClusters();
+                populateAIInsights();
+                streamConversations();
+                updateMetrics();
+                updateSentiment();
+            } else {
+                btn.textContent = 'Start Demo';
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                playIconMobile.classList.remove('hidden');
+                pauseIconMobile.classList.add('hidden');
+                
+                // Clear all intervals
+                demoIntervals.forEach(clearInterval);
+                demoIntervals = [];
+            }
+        }
+
+        // Bind toggle to both buttons
+        document.getElementById('toggleSimulation').addEventListener('click', toggleDemo);
+        document.getElementById('toggleSimulationMobile').addEventListener('click', toggleDemo);
+    </script>
+
+</body>
+</html>
