@@ -400,6 +400,30 @@
     <div class="pt-24 pb-16 px-6">
         <div class="max-w-5xl mx-auto space-y-16">
 
+            <!-- INTERNAL USE NOTICE -->
+            <div class="card-elevated p-6 mb-8" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(59, 130, 246, 0.05)); border: 1px solid rgba(168, 85, 247, 0.2);">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3);">
+                        <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm mb-1 flex items-center gap-2">
+                            <span>Confidential & Internal Use Only</span>
+                            <span class="text-xs font-normal px-2 py-0.5 rounded" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">
+                                Restricted
+                            </span>
+                        </h3>
+                        <p class="text-sm leading-relaxed" style="color: var(--muted);">
+                            This document contains proprietary information including operational methodologies, system architecture, 
+                            and cost structures. It is intended exclusively for internal team members and authorized business partners 
+                            under non-disclosure agreements. Unauthorized distribution or disclosure is strictly prohibited.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- SYSTEM ONTOLOGY (The Simplest Possible Summary) -->
             <section id="ontology" class="scroll-mt-24">
                 <div class="gradient-border">
@@ -1306,7 +1330,15 @@
                         <img src="logo.png" alt="BotFanatics Logo" class="h-40 w-40 object-contain mx-auto" style="filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));">
                     </div>
                     <p class="text-sm" style="color: var(--muted);">Operational AI Infrastructure for Growing Businesses</p>
-                    <p class="text-xs mt-4" style="color: var(--muted);">© 2025 BotFanatics.com — All rights reserved</p>
+                    <div class="mt-4 pt-4 border-t" style="border-color: var(--border);">
+                        <p class="text-xs flex items-center justify-center gap-2" style="color: var(--muted);">
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <span>Confidential — Internal Use & Authorized Partners Only</span>
+                        </p>
+                        <p class="text-xs mt-2" style="color: var(--muted);">© 2025 BotFanatics.com — All rights reserved</p>
+                    </div>
                 </div>
             </footer>
 
