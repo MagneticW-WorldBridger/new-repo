@@ -379,25 +379,19 @@
 <body class="antialiased">
     
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 border-b" style="background: rgba(10, 10, 11, 0.8); backdrop-filter: blur(12px); border-color: var(--border);">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #a855f7, #3b82f6); box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);">
-                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold">BotFanatics</h1>
-                        <p class="text-xs" style="color: var(--muted);">Service Features & System Ontology</p>
-                    </div>
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b" style="background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(16px); border-color: var(--border); box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);">
+        <div class="max-w-7xl mx-auto px-6 py-3">
+            <div class="flex items-center justify-between gap-6">
+                <!-- Banner on Left -->
+                <div class="flex-shrink-0">
+                    <img src="banner.png" alt="BotFanatics Banner" class="h-12 w-auto object-contain" style="filter: drop-shadow(0 2px 8px rgba(168, 85, 247, 0.2));">
                 </div>
-                <div class="flex gap-2">
-                    <a href="#ontology" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Ontology</a>
-                    <a href="#features" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Features</a>
-                    <a href="#implementation" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Implementation</a>
-                    <a href="#pricing" class="nav-pill px-4 py-2 rounded-full text-sm font-medium">Pricing</a>
+                <!-- Navigation Links on Right -->
+                <div class="flex items-center gap-2 ml-auto">
+                    <a href="#ontology" class="nav-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Ontology</a>
+                    <a href="#features" class="nav-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Features</a>
+                    <a href="#implementation" class="nav-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Implementation</a>
+                    <a href="#pricing" class="nav-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Pricing</a>
                 </div>
             </div>
         </div>
@@ -1308,13 +1302,8 @@
             <!-- FOOTER -->
             <footer class="pt-12 pb-8 border-t" style="border-color: var(--border);">
                 <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
-                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                        <span class="font-bold text-lg">BotFanatics</span>
+                    <div class="flex items-center justify-center mb-4">
+                        <img src="logo.png" alt="BotFanatics Logo" class="h-40 w-40 object-contain mx-auto" style="filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));">
                     </div>
                     <p class="text-sm" style="color: var(--muted);">Operational AI Infrastructure for Growing Businesses</p>
                     <p class="text-xs mt-4" style="color: var(--muted);">© 2025 BotFanatics.com — All rights reserved</p>
